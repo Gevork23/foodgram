@@ -1,3 +1,4 @@
+# backend/api/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from recipes.models import Recipe, Ingredient, Tag, RecipeIngredient, Favorite, ShoppingCart, Subscription
@@ -125,14 +126,16 @@ class RecipeSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = serializers.ListField(
         child=serializers.DictField(),
-        write_only=True
+        write_only=True,
+        required=True
     )
     tags = serializers.PrimaryKeyRelatedField(
         many=True, 
         queryset=Tag.objects.all(),
-        write_only=True
+        write_only=True,
+        required=True
     )
-    image = Base64ImageField(required=False)  # Сделаем необязательным для обновления
+    image = Base64ImageField(required=True)
     
     class Meta:
         model = Recipe
@@ -140,6 +143,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'ingredients', 'tags', 'image',
             'name', 'text', 'cooking_time'
         ]
+        extra_kwargs = {
+            'name': {'required': True},
+            'text': {'required': True},
+            'cooking_time': {'required': True},
+        }
+    
+    def to_representation(self, instance):
+        return RecipeSerializer(instance, context=self.context).data
     
     def validate_ingredients(self, value):
         if not value:
