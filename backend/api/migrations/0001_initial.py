@@ -31,13 +31,17 @@ class Migration(migrations.Migration):
                 (
                     "name",
                     models.CharField(
-                        max_length=200, unique=True, verbose_name="Название тега"
+                        max_length=200,
+                        unique=True,
+                        verbose_name="Название тега",
                     ),
                 ),
                 (
                     "slug",
                     models.SlugField(
-                        max_length=200, unique=True, verbose_name="Уникальный слаг"
+                        max_length=200,
+                        unique=True,
+                        verbose_name="Уникальный слаг",
                     ),
                 ),
             ],
@@ -59,7 +63,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "password",
+                    models.CharField(max_length=128, verbose_name="password"),
+                ),
                 (
                     "last_login",
                     models.DateTimeField(
@@ -93,13 +100,16 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now,
+                        verbose_name="date joined",
                     ),
                 ),
                 (
                     "email",
                     models.EmailField(
-                        max_length=254, unique=True, verbose_name="email address"
+                        max_length=254,
+                        unique=True,
+                        verbose_name="email address",
                     ),
                 ),
                 (
@@ -194,7 +204,8 @@ class Migration(migrations.Migration):
                 "ordering": ["id"],
                 "constraints": [
                     models.UniqueConstraint(
-                        fields=("name", "measurement_unit"), name="unique_ingredient"
+                        fields=("name", "measurement_unit"),
+                        name="unique_ingredient",
                     )
                 ],
             },
@@ -231,7 +242,8 @@ class Migration(migrations.Migration):
                 (
                     "image",
                     models.ImageField(
-                        upload_to="recipes/", verbose_name="Изображение рецепта"
+                        upload_to="recipes/",
+                        verbose_name="Изображение рецепта",
                     ),
                 ),
                 (
@@ -404,7 +416,9 @@ class Migration(migrations.Migration):
             model_name="recipe",
             name="tags",
             field=models.ManyToManyField(
-                related_name="recipes", to="api.tag", verbose_name="Теги рецепта"
+                related_name="recipes",
+                to="api.tag",
+                verbose_name="Теги рецепта",
             ),
         ),
         migrations.CreateModel(
@@ -458,7 +472,8 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="recipeingredient",
             constraint=models.UniqueConstraint(
-                fields=("recipe", "ingredient"), name="unique_recipe_ingredient"
+                fields=("recipe", "ingredient"),
+                name="unique_recipe_ingredient",
             ),
         ),
         migrations.AddConstraint(

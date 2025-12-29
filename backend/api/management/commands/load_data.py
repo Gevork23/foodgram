@@ -1,13 +1,12 @@
 # backend/api/management/commands/load_data.py
+# backend/api/management/commands/load_data.py
 import csv
 import json
 from pathlib import Path
 
+from api.models import Ingredient, Tag
 from django.core.management.base import BaseCommand
 from django.db import transaction
-
-from api.models import Ingredient, Tag
-
 
 DEFAULT_TAGS = [
     {"name": "Завтрак", "slug": "breakfast"},
@@ -24,23 +23,26 @@ class Command(BaseCommand):
             "--csv",
             dest="csv_path",
             default=None,
-            help="Path to ingredients.csv (optional). If not provided, tries ../data/ingredients.csv and data/ingredients.csv",
+            help=(
+                "Path to ingredients.csv (optional). If not provided, tries "
+                "../data/ingredients.csv and data/ingredients.csv"
+            ),
         )
         parser.add_argument(
             "--json",
             dest="json_path",
             default=None,
-            help="Path to ingredients.json (optional). If not provided, tries ../data/ingredients.json and data/ingredients.json",
+            help=(
+                "Path to ingredients.json (optional). If not provided, tries "
+                "../data/ingredients.json and data/ingredients.json"
+            ),
         )
 
     @transaction.atomic
     def handle(self, *args, **options):
-        # manage.py лежит в backend/
-        # поэтому "корень проекта" = backend/..
         backend_dir = Path.cwd().resolve()
         project_root = backend_dir.parent
 
-        # --- TAGS ---
         created_tags = 0
         for t in DEFAULT_TAGS:
             _, created = Tag.objects.get_or_create(
@@ -48,11 +50,12 @@ class Command(BaseCommand):
                 defaults={"name": t["name"]},
             )
             created_tags += int(created)
-        self.stdout.write(self.style.SUCCESS(
-            f"Tags: created {created_tags}, total {Tag.objects.count()}"
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Tags: created {created_tags}, total {Tag.objects.count()}"
+            )
+        )
 
-        # --- INGREDIENTS PATHS ---
         csv_candidates = []
         json_candidates = []
 
@@ -61,9 +64,6 @@ class Command(BaseCommand):
         if options["json_path"]:
             json_candidates.append(Path(options["json_path"]))
 
-        # авто-поиск в двух типичных местах:
-        # 1) ../data/... (когда запускаем из backend/)
-        # 2) data/...    (когда запускаем из корня проекта)
         csv_candidates += [
             project_root / "data" / "ingredients.csv",
             backend_dir / "data" / "ingredients.csv",
@@ -78,22 +78,32 @@ class Command(BaseCommand):
 
         if csv_path:
             created = self._load_csv(csv_path)
-            self.stdout.write(self.style.SUCCESS(
-                f"Ingredients loaded from CSV: +{created}, total {Ingredient.objects.count()}"
-            ))
+            total = Ingredient.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Ingredients loaded from CSV: +{created}, total {total}"
+                )
+            )
             return
 
         if json_path:
             created = self._load_json(json_path)
-            self.stdout.write(self.style.SUCCESS(
-                f"Ingredients loaded from JSON: +{created}, total {Ingredient.objects.count()}"
-            ))
+            total = Ingredient.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Ingredients loaded from JSON: +{created}, total {total}"
+                )
+            )
             return
 
-        self.stdout.write(self.style.WARNING(
-            "No ingredients file found (CSV/JSON). Checked:\n"
-            + "\n".join([str(p.resolve()) for p in (csv_candidates + json_candidates)])
-        ))
+        self.stdout.write(
+            self.style.WARNING(
+                "No ingredients file found (CSV/JSON). Checked:\n"
+                + "\n".join(
+                    [str(p.resolve()) for p in (csv_candidates + json_candidates)]
+                )
+            )
+        )
 
     def _first_existing(self, paths):
         for p in paths:
@@ -117,7 +127,8 @@ class Command(BaseCommand):
                 if not name or not unit:
                     continue
                 _, was_created = Ingredient.objects.get_or_create(
-                    name=name, measurement_unit=unit
+                    name=name,
+                    measurement_unit=unit,
                 )
                 created += int(was_created)
         return created
@@ -133,7 +144,8 @@ class Command(BaseCommand):
             if not name or not unit:
                 continue
             _, was_created = Ingredient.objects.get_or_create(
-                name=name, measurement_unit=unit
+                name=name,
+                measurement_unit=unit,
             )
             created += int(was_created)
         return created

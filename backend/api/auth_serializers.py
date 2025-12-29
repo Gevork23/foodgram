@@ -12,11 +12,12 @@ class EmailAuthTokenSerializer(serializers.Serializer):
         password = attrs.get("password")
 
         request = self.context.get("request")
-        # В Django authenticate принимает аргумент username, даже если USERNAME_FIELD = 'email'
         user = authenticate(request=request, username=email, password=password)
 
         if not user:
-            raise serializers.ValidationError("Unable to log in with provided credentials.")
+            raise serializers.ValidationError(
+                "Unable to log in with provided credentials."
+            )
 
         attrs["user"] = user
         return attrs

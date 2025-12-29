@@ -1,21 +1,22 @@
 # backend/api/filters.py
 from django_filters import rest_framework as filters
-from .models import Recipe, Ingredient
+
+from .models import Ingredient, Recipe
 
 
 class RecipeFilter(filters.FilterSet):
     # вместо CharInFilter
-    tags = filters.CharFilter(method='filter_tags')
-    author = filters.NumberFilter(field_name='author__id')
-    is_favorited = filters.BooleanFilter(method='filter_is_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(method='filter_is_in_shopping_cart')
+    tags = filters.CharFilter(method="filter_tags")
+    author = filters.NumberFilter(field_name="author__id")
+    is_favorited = filters.BooleanFilter(method="filter_is_favorited")
+    is_in_shopping_cart = filters.BooleanFilter(method="filter_is_in_shopping_cart")
 
     class Meta:
         model = Recipe
-        fields = ['tags', 'author', 'is_favorited', 'is_in_shopping_cart']
+        fields = ["tags", "author", "is_favorited", "is_in_shopping_cart"]
 
     def filter_tags(self, queryset, name, value):
-        tags = self.request.query_params.getlist('tags')
+        tags = self.request.query_params.getlist("tags")
         if not tags:
             return queryset
         return queryset.filter(tags__slug__in=tags).distinct()
@@ -35,11 +36,12 @@ class RecipeFilter(filters.FilterSet):
 
 class IngredientFilter(filters.FilterSet):
     """Фильтры для ингредиентов"""
-    name = filters.CharFilter(method='filter_name')
+
+    name = filters.CharFilter(method="filter_name")
 
     class Meta:
         model = Ingredient
-        fields = ['name']
+        fields = ["name"]
 
     def filter_name(self, queryset, name, value):
         return queryset.filter(name__istartswith=value)
