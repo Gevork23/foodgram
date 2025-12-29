@@ -1,5 +1,5 @@
+# gitignore for foodgram project
 frontend/node_modules
-infra/frontend/build
 .env
 
 # Byte-compiled / optimized / DLL files
@@ -109,7 +109,6 @@ celerybeat.pid
 .env
 .venv
 .venv/
-.env/
 env/
 venv/
 ENV/
