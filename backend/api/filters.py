@@ -38,10 +38,15 @@ class IngredientFilter(filters.FilterSet):
     """Фильтры для ингредиентов"""
 
     name = filters.CharFilter(method="filter_name")
+    search = filters.CharFilter(method="filter_search")  # ✅ добавили
 
     class Meta:
         model = Ingredient
-        fields = ["name"]
+        fields = ["name", "search"]
 
     def filter_name(self, queryset, name, value):
+        return queryset.filter(name__istartswith=value)
+
+    def filter_search(self, queryset, name, value):
+        # можно сделать так же, как name, чтобы фронт работал стабильно
         return queryset.filter(name__istartswith=value)

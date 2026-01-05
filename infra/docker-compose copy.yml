@@ -9,6 +9,7 @@ services:
 
   backend:
     image: gevork23/foodgram_backend:1.0
+    build: ../backend
     restart: unless-stopped
     env_file: ../.env
     depends_on:
@@ -26,12 +27,14 @@ services:
 
   frontend:
     image: gevork23/foodgram_frontend:1.0
+    build: ../frontend
     restart: "no"
     volumes:
       - frontend_build:/frontend_build
 
   nginx:
     image: gevork23/foodgram_nginx:1.0
+    build: ./nginx
     restart: unless-stopped
     ports:
       - "80:80"
