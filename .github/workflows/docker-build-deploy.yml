@@ -99,11 +99,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: |
-            docker-compose.production.yml
-            data
-            docs
+          source: "foodgram/docker-compose.production.yml,foodgram/data,foodgram/docs"
+          strip_components: 1
           target: ${{ secrets.DEPLOY_PATH }}
+          overwrite: true
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
