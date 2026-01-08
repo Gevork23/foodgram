@@ -1,12 +1,12 @@
 # backend/api/management/commands/load_data.py
-# backend/api/management/commands/load_data.py
 import csv
 import json
 from pathlib import Path
 
-from api.models import Ingredient, Tag
 from django.core.management.base import BaseCommand
 from django.db import transaction
+
+from api.models import Ingredient, Tag
 
 DEFAULT_TAGS = [
     {"name": "Завтрак", "slug": "breakfast"},
@@ -100,7 +100,10 @@ class Command(BaseCommand):
             self.style.WARNING(
                 "No ingredients file found (CSV/JSON). Checked:\n"
                 + "\n".join(
-                    [str(p.resolve()) for p in (csv_candidates + json_candidates)]
+                    [
+                        str(p.resolve())
+                        for p in (csv_candidates + json_candidates)
+                    ]
                 )
             )
         )

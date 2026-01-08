@@ -112,10 +112,14 @@ class UserViewSet(viewsets.ModelViewSet):
     def avatar(self, request):
         user = request.user
         if request.method == "PUT":
-            serializer = UserAvatarSerializer(user, data=request.data, partial=False)
+            serializer = UserAvatarSerializer(
+                user, data=request.data, partial=False
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response({"avatar": request.build_absolute_uri(user.avatar.url)})
+            return Response(
+                {"avatar": request.build_absolute_uri(user.avatar.url)}
+            )
         elif request.method == "DELETE":
             if user.avatar:
                 user.avatar.delete(save=False)
@@ -144,7 +148,9 @@ class UserViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            subscription = Subscription.objects.create(user=user, author=author)
+            subscription = Subscription.objects.create(
+                user=user, author=author
+            )
             serializer = SubscriptionSerializer(
                 subscription, context={"request": request}
             )
@@ -201,6 +207,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
@@ -234,7 +241,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
         recipe = serializer.save()
-        return Response(RecipeReadSerializer(recipe, context={"request": request}).data)
+        return Response(
+            RecipeReadSerializer(recipe, context={"request": request}).data
+        )
 
     def partial_update(self, request, *args, **kwargs):
         # PATCH делаем строгим: обязаны прийти tags и ingredients
@@ -257,7 +266,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Favorite.objects.create(user=user, recipe=recipe)
-            serializer = RecipeShortSerializer(recipe, context={"request": request})
+            serializer = RecipeShortSerializer(
+                recipe, context={"request": request}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # DELETE
@@ -286,7 +297,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             ShoppingCart.objects.create(user=user, recipe=recipe)
-            serializer = RecipeShortSerializer(recipe, context={"request": request})
+            serializer = RecipeShortSerializer(
+                recipe, context={"request": request}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         cart_qs = ShoppingCart.objects.filter(user=user, recipe=recipe)
@@ -313,7 +326,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment; filename="shopping_list.csv"'
+        response["Content-Disposition"] = (
+            'attachment; filename="shopping_list.csv"'
+        )
 
         writer = csv.writer(response)
         writer.writerow(["Ингредиент", "Количество", "Единица измерения"])
@@ -323,7 +338,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 [
                     ingredient["recipe_ingredients__ingredient__name"],
                     ingredient["total_amount"],
-                    ingredient["recipe_ingredients__ingredient__measurement_unit"],
+                    ingredient[
+                        "recipe_ingredients__ingredient__measurement_unit"
+                    ],
                 ]
             )
 

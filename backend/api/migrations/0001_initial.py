@@ -128,7 +128,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "first_name",
-                    models.CharField(max_length=150, verbose_name="first name"),
+                    models.CharField(
+                        max_length=150, verbose_name="first name"
+                    ),
                 ),
                 (
                     "last_name",
@@ -195,7 +197,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "measurement_unit",
-                    models.CharField(max_length=200, verbose_name="Единица измерения"),
+                    models.CharField(
+                        max_length=200, verbose_name="Единица измерения"
+                    ),
                 ),
             ],
             options={
@@ -224,7 +228,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(max_length=200, verbose_name="Название рецепта"),
+                    models.CharField(
+                        max_length=200, verbose_name="Название рецепта"
+                    ),
                 ),
                 ("text", models.TextField(verbose_name="Описание рецепта")),
                 (

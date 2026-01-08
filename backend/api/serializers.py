@@ -77,7 +77,9 @@ class UserSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
         if request and request.user.is_authenticated:
-            return Subscription.objects.filter(user=request.user, author=obj).exists()
+            return Subscription.objects.filter(
+                user=request.user, author=obj
+            ).exists()
         return False
 
 
@@ -156,7 +158,9 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True, read_only=True)  # <-- ВАЖНО: объекты, не id
+    tags = TagSerializer(
+        many=True, read_only=True
+    )  # <-- ВАЖНО: объекты, не id
     author = UserSerializer(read_only=True)
     ingredients = RecipeIngredientReadSerializer(
         source="recipe_ingredients", many=True, read_only=True
@@ -183,22 +187,30 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, obj):
         request = self.context.get("request")
         if request and request.user.is_authenticated:
-            return Favorite.objects.filter(user=request.user, recipe=obj).exists()
+            return Favorite.objects.filter(
+                user=request.user, recipe=obj
+            ).exists()
         return False
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get("request")
         if request and request.user.is_authenticated:
-            return ShoppingCart.objects.filter(user=request.user, recipe=obj).exists()
+            return ShoppingCart.objects.filter(
+                user=request.user, recipe=obj
+            ).exists()
         return False
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для рецептов"""
 
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all()
+    )
     author = UserSerializer(read_only=True)
-    ingredients = RecipeIngredientSerializer(many=True, source="recipe_ingredients")
+    ingredients = RecipeIngredientSerializer(
+        many=True, source="recipe_ingredients"
+    )
     image = Base64ImageField(required=True)
     cooking_time = serializers.IntegerField(validators=[MinValueValidator(1)])
 
@@ -218,13 +230,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def validate_ingredients(self, value):
         if not value:
-            raise serializers.ValidationError("Добавьте хотя бы один ингредиент")
+            raise serializers.ValidationError(
+                "Добавьте хотя бы один ингредиент"
+            )
 
         seen = set()
         for item in value:
             ingredient = item["ingredient"]  # <-- это уже Ingredient instance
             if ingredient.id in seen:
-                raise serializers.ValidationError("Ингредиенты не должны повторяться")
+                raise serializers.ValidationError(
+                    "Ингредиенты не должны повторяться"
+                )
             seen.add(ingredient.id)
         return value
 
@@ -308,8 +324,15 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = (
-            "id", "email", "username", "first_name", "last_name",
-            "is_subscribed", "avatar", "recipes", "recipes_count"
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed",
+            "avatar",
+            "recipes",
+            "recipes_count",
         )
 
     def get_is_subscribed(self, obj):
@@ -317,7 +340,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get("request")
-        recipes_limit = request.query_params.get("recipes_limit") if request else None
+        recipes_limit = (
+            request.query_params.get("recipes_limit") if request else None
+        )
 
         qs = obj.author.recipes.all()
         if recipes_limit:

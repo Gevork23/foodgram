@@ -136,4 +136,6 @@ DJOSER = {
 }
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "")
-CSRF_TRUSTED_ORIGINS = [x.strip() for x in CSRF_TRUSTED_ORIGINS.split(",") if x.strip()]
+CSRF_TRUSTED_ORIGINS = [
+    x.strip() for x in CSRF_TRUSTED_ORIGINS.split(",") if x.strip()
+]

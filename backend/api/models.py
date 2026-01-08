@@ -20,13 +20,17 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 regex=r"^[\w.@+-]+\Z",
-                message="Username должен содержать только буквы, цифры и @/./+/-/_",
+                message=(
+                    "Username должен содержать только буквы, цифры и @/./+/-/_"
+                ),
             )
         ],
     )
     first_name = models.CharField("first name", max_length=150, blank=False)
     last_name = models.CharField("last name", max_length=150, blank=False)
-    avatar = models.ImageField("Аватар", upload_to="avatars/", blank=True, null=True)
+    avatar = models.ImageField(
+        "Аватар", upload_to="avatars/", blank=True, null=True
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
@@ -43,8 +47,12 @@ class User(AbstractUser):
 class Tag(models.Model):
     """Модель тегов"""
 
-    name = models.CharField("Название тега", max_length=200, unique=True, blank=False)
-    slug = models.SlugField("Уникальный слаг", max_length=200, unique=True, blank=False)
+    name = models.CharField(
+        "Название тега", max_length=200, unique=True, blank=False
+    )
+    slug = models.SlugField(
+        "Уникальный слаг", max_length=200, unique=True, blank=False
+    )
 
     class Meta:
         ordering = ["id"]
@@ -58,7 +66,9 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Модель ингредиентов"""
 
-    name = models.CharField("Название ингредиента", max_length=200, blank=False)
+    name = models.CharField(
+        "Название ингредиента", max_length=200, blank=False
+    )
     measurement_unit = models.CharField(
         "Единица измерения", max_length=200, blank=False
     )
@@ -90,7 +100,9 @@ class Recipe(models.Model):
             )
         ],
     )
-    image = models.ImageField("Изображение рецепта", upload_to="recipes/", blank=False)
+    image = models.ImageField(
+        "Изображение рецепта", upload_to="recipes/", blank=False
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -134,7 +146,9 @@ class RecipeIngredient(models.Model):
     )
     amount = models.PositiveIntegerField(
         "Количество",
-        validators=[MinValueValidator(1, message="Количество должно быть не менее 1")],
+        validators=[
+            MinValueValidator(1, message="Количество должно быть не менее 1")
+        ],
     )
 
     class Meta:
@@ -214,7 +228,9 @@ class Favorite(models.Model):
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         constraints = [
-            models.UniqueConstraint(fields=["user", "recipe"], name="unique_favorite")
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique_favorite"
+            )
         ]
 
     def __str__(self):
