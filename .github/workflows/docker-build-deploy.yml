@@ -99,8 +99,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: "foodgram/docker-compose.production.yml,foodgram/data,foodgram/docs"
-          strip_components: 1
+          source: "docker-compose.production.yml,data,docs"
           target: ${{ secrets.DEPLOY_PATH }}
           overwrite: true
 
@@ -114,11 +113,6 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
-
-            # на всякий: права
-            chmod 600 .env || true
-
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml up -d --remove-orphans
-
             sudo docker compose -f docker-compose.production.yml ps
