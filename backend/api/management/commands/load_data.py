@@ -1,4 +1,3 @@
-# backend/api/management/commands/load_data.py
 import csv
 import json
 from pathlib import Path

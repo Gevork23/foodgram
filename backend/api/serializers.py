@@ -1,4 +1,3 @@
-# backend/api/serializers.py
 import base64
 
 from django.contrib.auth import get_user_model
@@ -160,7 +159,7 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(
         many=True, read_only=True
-    )  # <-- ВАЖНО: объекты, не id
+    )
     author = UserSerializer(read_only=True)
     ingredients = RecipeIngredientReadSerializer(
         source="recipe_ingredients", many=True, read_only=True
@@ -236,7 +235,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
         seen = set()
         for item in value:
-            ingredient = item["ingredient"]  # <-- это уже Ingredient instance
+            ingredient = item["ingredient"]
             if ingredient.id in seen:
                 raise serializers.ValidationError(
                     "Ингредиенты не должны повторяться"
@@ -266,7 +265,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             [
                 RecipeIngredient(
                     recipe=recipe,
-                    ingredient=item["ingredient"],  # <-- Ingredient instance
+                    ingredient=item["ingredient"],
                     amount=item["amount"],
                 )
                 for item in ingredients_data

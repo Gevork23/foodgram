@@ -1,11 +1,9 @@
-# backend/api/filters.py
 from django_filters import rest_framework as filters
 
 from .models import Ingredient, Recipe
 
 
 class RecipeFilter(filters.FilterSet):
-    # вместо CharInFilter
     tags = filters.CharFilter(method="filter_tags")
     author = filters.NumberFilter(field_name="author__id")
     is_favorited = filters.BooleanFilter(method="filter_is_favorited")
@@ -40,7 +38,7 @@ class IngredientFilter(filters.FilterSet):
     """Фильтры для ингредиентов"""
 
     name = filters.CharFilter(method="filter_name")
-    search = filters.CharFilter(method="filter_search")  # ✅ добавили
+    search = filters.CharFilter(method="filter_search")
 
     class Meta:
         model = Ingredient
@@ -50,5 +48,4 @@ class IngredientFilter(filters.FilterSet):
         return queryset.filter(name__istartswith=value)
 
     def filter_search(self, queryset, name, value):
-        # можно сделать так же, как name, чтобы фронт работал стабильно
         return queryset.filter(name__istartswith=value)

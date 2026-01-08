@@ -1,4 +1,3 @@
-# backend/api/permissions.py
 from rest_framework import permissions
 
 

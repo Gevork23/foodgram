@@ -1,4 +1,3 @@
-# backend/api/views.py
 import csv
 
 from django.db.models import Sum
@@ -246,7 +245,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def partial_update(self, request, *args, **kwargs):
-        # PATCH делаем строгим: обязаны прийти tags и ingredients
         kwargs["partial"] = False
         return self.update(request, *args, **kwargs)
 
@@ -271,7 +269,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # DELETE
         qs = Favorite.objects.filter(user=user, recipe=recipe)
         if not qs.exists():
             return Response(

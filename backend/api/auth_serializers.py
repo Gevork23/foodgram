@@ -1,4 +1,3 @@
-# backend/api/auth_serializers.py
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
