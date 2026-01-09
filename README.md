@@ -36,7 +36,7 @@ cd foodgram
 
 ### 2. Создать файл .env
 Пример переменных окружения:
-
+```
 DEBUG=False
 SECRET_KEY=django-secret-key
 ALLOWED_HOSTS=127.0.0.1,localhost
@@ -46,7 +46,7 @@ POSTGRES_USER=foodgram
 POSTGRES_PASSWORD=foodgram
 DB_HOST=db
 DB_PORT=5432
-
+```
 ### 3. Запустить контейнеры
 
 docker compose -f docker-compose.production.yml up -d --build
