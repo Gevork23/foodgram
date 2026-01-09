@@ -31,7 +31,7 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 regex=r"^[\w.@+-]+\Z",
-                message="Username должен содержать только буквы, цифры и @/./+/-/_",
+                message="Должен содержать только буквы, цифры и @/./+/-/_",
             )
         ],
     )
