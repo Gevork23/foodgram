@@ -32,13 +32,13 @@ services:
       DJANGO_SUPERUSER_PASSWORD: admin
 
   frontend:
-    image: gevork23/foodgram_frontend:1.1
+    image: gevork23/foodgram_frontend:1.2
     restart: "no"
     volumes:
       - frontend_build:/frontend_build
 
   nginx:
-    image: gevork23/foodgram_nginx:1.1
+    image: gevork23/foodgram_nginx:1.2
     restart: unless-stopped
     ports:
       - "127.0.0.1:7000:80"
