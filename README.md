@@ -60,9 +60,10 @@ docker compose exec backend python manage.py load_data
 ### 6. Создать суперпользователя (если нужно)
 
 docker compose exec backend python manage.py createsuperuser
+
 Данные администратора
-Email: admin@example.com
-Пароль: admin
+- Email: admin@example.com
+- Пароль: admin
 
 #### Панель администратора доступна по адресу:
 /admin/
