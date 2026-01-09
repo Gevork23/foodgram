@@ -1,8 +1,20 @@
 [tool.black]
 line-length = 79
-target-version = ["py311"]
+target-version = ["py312"]
+exclude = '''
+/(
+  venv
+  | migrations
+)/
+'''
 
 [tool.isort]
 profile = "black"
 line_length = 79
 known_first_party = ["api", "users", "recipes"]
+skip = ["venv", "migrations"]
+
+[tool.flake8]
+max-line-length = 79
+extend-ignore = ["E203", "W503"]
+exclude = ["venv", "migrations"]

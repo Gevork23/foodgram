@@ -3,32 +3,47 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
+from .constants import (
+    EMAIL_MAX_LENGTH,
+    FIRST_NAME_MAX_LENGTH,
+    INGREDIENT_NAME_MAX_LENGTH,
+    LAST_NAME_MAX_LENGTH,
+    MEASUREMENT_UNIT_MAX_LENGTH,
+    RECIPE_NAME_MAX_LENGTH,
+    TAG_NAME_MAX_LENGTH,
+    TAG_SLUG_MAX_LENGTH,
+    USERNAME_MAX_LENGTH,
+)
+
 
 class User(AbstractUser):
     """Модель пользователя"""
 
     email = models.EmailField(
-        "email address", unique=True, max_length=254, blank=False, null=False
+        "email address",
+        unique=True,
+        max_length=EMAIL_MAX_LENGTH,
     )
     username = models.CharField(
         "username",
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
         unique=True,
-        blank=False,
-        null=False,
         validators=[
             RegexValidator(
                 regex=r"^[\w.@+-]+\Z",
-                message=(
-                    "Username должен содержать только буквы, цифры и @/./+/-/_"
-                ),
+                message="Username должен содержать только буквы, цифры и @/./+/-/_",
             )
         ],
     )
-    first_name = models.CharField("first name", max_length=150, blank=False)
-    last_name = models.CharField("last name", max_length=150, blank=False)
+    first_name = models.CharField(
+        "first name", max_length=FIRST_NAME_MAX_LENGTH
+    )
+    last_name = models.CharField("last name", max_length=LAST_NAME_MAX_LENGTH)
     avatar = models.ImageField(
-        "Аватар", upload_to="avatars/", blank=True, null=True
+        "Аватар",
+        upload_to="avatars/",
+        blank=True,
+        null=True,
     )
 
     USERNAME_FIELD = "email"
@@ -47,10 +62,14 @@ class Tag(models.Model):
     """Модель тегов"""
 
     name = models.CharField(
-        "Название тега", max_length=200, unique=True, blank=False
+        "Название тега",
+        max_length=TAG_NAME_MAX_LENGTH,
+        unique=True,
     )
     slug = models.SlugField(
-        "Уникальный слаг", max_length=200, unique=True, blank=False
+        "Уникальный слаг",
+        max_length=TAG_SLUG_MAX_LENGTH,
+        unique=True,
     )
 
     class Meta:
@@ -66,10 +85,11 @@ class Ingredient(models.Model):
     """Модель ингредиентов"""
 
     name = models.CharField(
-        "Название ингредиента", max_length=200, blank=False
+        "Название ингредиента", max_length=INGREDIENT_NAME_MAX_LENGTH
     )
     measurement_unit = models.CharField(
-        "Единица измерения", max_length=200, blank=False
+        "Единица измерения",
+        max_length=MEASUREMENT_UNIT_MAX_LENGTH,
     )
 
     class Meta:
@@ -78,7 +98,8 @@ class Ingredient(models.Model):
         verbose_name_plural = "Ингредиенты"
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "measurement_unit"], name="unique_ingredient"
+                fields=["name", "measurement_unit"],
+                name="unique_ingredient",
             )
         ]
 
@@ -89,19 +110,20 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     """Модель рецептов"""
 
-    name = models.CharField("Название рецепта", max_length=200, blank=False)
-    text = models.TextField("Описание рецепта", blank=False)
+    name = models.CharField(
+        "Название рецепта", max_length=RECIPE_NAME_MAX_LENGTH
+    )
+    text = models.TextField("Описание рецепта")
     cooking_time = models.PositiveIntegerField(
         "Время приготовления (в минутах)",
         validators=[
             MinValueValidator(
-                1, message="Время приготовления должно быть не менее 1 минуты"
+                1,
+                message="Время приготовления должно быть не менее 1 минуты",
             )
         ],
     )
-    image = models.ImageField(
-        "Изображение рецепта", upload_to="recipes/", blank=False
-    )
+    image = models.ImageField("Изображение рецепта", upload_to="recipes/")
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -109,7 +131,9 @@ class Recipe(models.Model):
         verbose_name="Автор рецепта",
     )
     tags = models.ManyToManyField(
-        Tag, related_name="recipes", verbose_name="Теги рецепта"
+        Tag,
+        related_name="recipes",
+        verbose_name="Теги рецепта",
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -188,12 +212,12 @@ class Subscription(models.Model):
         verbose_name_plural = "Подписки"
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "author"], name="unique_subscription"
-            ),
+                fields=["user", "author"],
+                name="unique_subscription",
+            )
         ]
 
     def clean(self):
-        """Валидация, чтобы пользователь не мог подписаться сам на себя"""
         if self.user == self.author:
             raise ValidationError("Нельзя подписаться на самого себя")
 
@@ -228,7 +252,8 @@ class Favorite(models.Model):
         verbose_name_plural = "Избранное"
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "recipe"], name="unique_favorite"
+                fields=["user", "recipe"],
+                name="unique_favorite",
             )
         ]
 
@@ -259,7 +284,8 @@ class ShoppingCart(models.Model):
         verbose_name_plural = "Списки покупок"
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "recipe"], name="unique_shopping_cart"
+                fields=["user", "recipe"],
+                name="unique_shopping_cart",
             )
         ]
 

@@ -15,7 +15,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: gevork23/foodgram_backend:latest
+    image: gevork23/foodgram_backend:1.1
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -32,13 +32,13 @@ services:
       DJANGO_SUPERUSER_PASSWORD: admin
 
   frontend:
-    image: gevork23/foodgram_frontend:latest
+    image: gevork23/foodgram_frontend:1.1
     restart: "no"
     volumes:
       - frontend_build:/frontend_build
 
   nginx:
-    image: gevork23/foodgram_nginx:latest
+    image: gevork23/foodgram_nginx:1.1
     restart: unless-stopped
     ports:
       - "127.0.0.1:7000:80"

@@ -1,4 +1,3 @@
-#foodgram/backend/docker-entrypoint.sh
 set -e
 
 if [ -n "$DB_HOST" ]; then

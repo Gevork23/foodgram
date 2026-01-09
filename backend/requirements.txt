@@ -24,6 +24,8 @@ sqlparse==0.5.5
 tzdata==2025.3
 urllib3==2.6.2
 gunicorn==21.2.0
+drf-extra-fields==3.7.0
+filetype==1.2.0
 
 # Testing
 pytest==7.4.0
