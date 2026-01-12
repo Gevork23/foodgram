@@ -2,7 +2,7 @@ import csv
 
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
@@ -58,6 +58,9 @@ class CustomAuthToken(ObtainAuthToken):
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"auth_token": token.key})
 
+def recipe_short_redirect(request, pk: int):
+    get_object_or_404(Recipe, pk=pk)
+    return redirect(request.build_absolute_uri(f"/recipes/{pk}"))
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -357,4 +360,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="get-link")
     def get_link(self, request, pk=None):
         recipe = self.get_object()
-        return Response({"short-link": f"/api/recipes/{recipe.id}/"})
+        short_url = request.build_absolute_uri(f"/s/{recipe.id}/")
+        return Response({"short-link": short_url})
+
