@@ -58,9 +58,11 @@ class CustomAuthToken(ObtainAuthToken):
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"auth_token": token.key})
 
+
 def recipe_short_redirect(request, pk: int):
     get_object_or_404(Recipe, pk=pk)
     return redirect(request.build_absolute_uri(f"/recipes/{pk}"))
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -362,4 +364,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = self.get_object()
         short_url = request.build_absolute_uri(f"/s/{recipe.id}/")
         return Response({"short-link": short_url})
-
